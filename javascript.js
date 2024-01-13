@@ -13,9 +13,11 @@ let playerSelection = prompt(); //prompts player to input their choice
 function playRound(playerSelection, computerSelection){
         if(!(gameChoices.includes(playerSelection))){ //checks players choice against the array to see if it DOESNT match
             return 'your choice of: ' + playerSelection + ' is not a valid option';
-        }
 
-    else if(playerSelection == 'rock' && computerSelection == 'paper' || //if computer wins
+        }else if(playerSelection == computerSelection){
+            return 'It\'s a tie! You both chose' + playerSelection;
+            
+        } else if(playerSelection == 'rock' && computerSelection == 'paper' || //if computer wins
         playerSelection == 'paper' && computerSelection == 'scissors' ||
         playerSelection == 'scissors' && computerSelection == 'rock'
     ){
@@ -25,3 +27,5 @@ function playRound(playerSelection, computerSelection){
         return "You Win, " + playerSelection + " beats " + computerSelection + "!"; //if not, go here
     }
 }
+
+console.log(playRound(playerSelection,computerSelection));
