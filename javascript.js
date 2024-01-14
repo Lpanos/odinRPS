@@ -1,6 +1,4 @@
 const gameChoices = ['rock','paper','scissors']; //sets the possible choices for the computer to choose from
-let computerScore = 0;
-let playerScore = 0 //define and set score variables
 let gameString = '';
 
 function getComputerChoice(gameChoices){
@@ -10,38 +8,67 @@ function getComputerChoice(gameChoices){
 
 function playRound(playerSelection, computerSelection,playerScore, computerScore){
         if(!(gameChoices.includes(playerSelection))){ //checks players choice against the array to see if it DOESNT match
-            return 'your choice of: ' + playerSelection + ' is not a valid option';
+
+            gameString = 'your choice of: ' + playerSelection + ' is not a valid option';
+            return {gameString: gameString,
+                playerScore: playerScore,
+                computerScore: computerScore}; //returns all values seperately
 
         } else if(playerSelection == computerSelection){
-            return 'It\'s a tie! You both chose ' + playerSelection;
+
+            gameString = 'It\'s a tie! You both chose ' + playerSelection + '!';
+
+            return {gameString: gameString,
+                    playerScore: playerScore,
+                    computerScore: computerScore};
 
         } else if(playerSelection == 'rock' && computerSelection == 'paper' || //if computer wins
-        playerSelection == 'paper' && computerSelection == 'scissors' ||
-        playerSelection == 'scissors' && computerSelection == 'rock'
-    ){
-        gameString = "You lose, " + computerSelection + " beats " + playerSelection + "!";
-        computerScore = 1;
-        return {gameString, playerScore, computerScore};//tell them why
+                    playerSelection == 'paper' && computerSelection == 'scissors' ||
+                    playerSelection == 'scissors' && computerSelection == 'rock'
+        ){
+            gameString = "You lose, " + computerSelection + " beats " + playerSelection + "!";
+            computerScore++; //increment computer score by 1
+            return {gameString: gameString,
+                    playerScore: playerScore,
+                    computerScore: computerScore};//tell them why
         
     } else {
         gameString = "You win, " + playerSelection + " beats " + computerSelection + "!"; //if not, go here
-        playerScore = 1;
-        return {gameString, playerScore, computerScore};
+        playerScore++; //increment player score by 1
+        return {gameString: gameString,
+                playerScore: playerScore,
+                computerScore: computerScore
+            };
     }
 }
 
 
-function game(playerScore,computerScore){
-    for (let i = 1; i <= 5; i++){
-        let computerSelection = getComputerChoice(gameChoices);
+function game(){
+    let computerScore = 0;
+    let playerScore = 0 //define and set score variables
 
-        let playerSelection = prompt(); //prompts player to input their choice
-        playerSelection = playerSelection.toLowerCase(); //
+        for (let i = 1; i <= 5; i++){
+            let computerSelection = getComputerChoice(gameChoices);
 
-        playRound(playerSelection,computerSelection,playerScore,computerScore);
-            console.log(playerScore,computerScore);
-    } return {gameString,playerScore,computerScore};
+            let playerSelection = prompt(); //prompts player to input their choice
+
+                playerSelection = playerSelection.toLowerCase();
+
+            results = (playRound(playerSelection,computerSelection,playerScore,computerScore)); //play one round, inputting all 4 parameters
+                gameString = results.gameString;
+                playerScore = results.playerScore;
+                computerScore = results.computerScore;
+            console.log(gameString + ' Player Score: ' + playerScore + ' | Computer Score: ' + computerScore); 
+
+
+        } 
+            if(playerScore < computerScore){
+                return 'Sorry bozo, you ultimately lost, with a score of: ' + playerScore + ' to ' + computerScore;
+            } else {
+                return 'Congradulations, you won! With a score of: ' + playerScore + ' to ' + computerScore;
+            }
+        
     
 }
 
-console.log(game(playerScore,computerScore));
+console.log(game());
