@@ -2,7 +2,8 @@ const gameChoices = ['rock','paper','scissors']; //sets the possible choices for
 let gameString = '';
 let playerScore = 0;
 let computerScore = 0;
-let roundNum = 0;
+let roundNum = 1;
+let gameOver = 0;
 
 function getComputerChoice(options){
     return options[Math.floor(Math.random() * options.length)];
@@ -16,7 +17,8 @@ function playRound(playerSelection, computerSelection, playerScore, computerScor
 
             return {gameString: gameString,
                     playerScore: playerScore,
-                    computerScore: computerScore};
+                    computerScore: computerScore,
+                    tie: 1};
 
         } else if(playerSelection == 'rock' && computerSelection == 'paper' || //if computer wins
                     playerSelection == 'paper' && computerSelection == 'scissors' ||
@@ -28,7 +30,8 @@ function playRound(playerSelection, computerSelection, playerScore, computerScor
 
                         return {gameString: gameString,
                                 playerScore: playerScore,
-                                computerScore: computerScore};
+                                computerScore: computerScore,
+                                tie: 0};
         
         } else {
                 gameString = "You win, " + playerSelection + " beats " + computerSelection + "!";
@@ -37,7 +40,8 @@ function playRound(playerSelection, computerSelection, playerScore, computerScor
 
                 return {gameString: gameString,
                         playerScore: playerScore,
-                        computerScore: computerScore
+                        computerScore: computerScore,
+                        tie: 0
                 };
     }
 }
@@ -48,22 +52,11 @@ let results = document.querySelector('#results');
 
 let choices = document.querySelector('#choices');
 
-if (playerScore == 5 || computerScore == 5){
 
-    function createWinner (){
 
-        let li = document.createElement('li');
-            if(playerScore > computerScore){
-                li.textContent = 'Congradulations, You Won! Total Score: Player: ' + playerScore + ' | Computer: ' + computerScore; 
-            } else {
-                li.textContent = 'Sorry Pal, You Lost! Total Score: Player: ' + playerScore + ' | Computer: ' + computerScore;
-             }
-                return li; 
-    }
+choices.addEventListener('click', (event) => {
 
-} else {
-
-        choices.addEventListener('click', (event) => {
+if(!gameOver){
 
             let target = event.target;
 
@@ -86,10 +79,33 @@ if (playerScore == 5 || computerScore == 5){
                         gameString = roundOutcome.gameString;
                         playerScore =+ roundOutcome.playerScore;
                         computerScore =+ roundOutcome.computerScore;
+                        tie = roundOutcome.tie;
 
                     let li = document.createElement('li');
 
-                    li.textContent = 'Round ' + ++roundNum + ': ' + gameString + ' Total Score: Player: ' + playerScore + ' | Computer: ' + computerScore; 
+                    if (playerScore == 5 || computerScore == 5){
+            
+                        if(playerScore > computerScore){
+                            li.textContent = 'Round ' + roundNum + ': ' + gameString + 'Congradulations, You Won! Total Score: Player: ' + playerScore + ' | Computer: ' + computerScore + " | Refresh The Page To Restart"; 
+                
+                        } else {
+                            li.textContent = 'Round ' + roundNum + ': ' + gameString + 'Sorry Pal, You Lost! Total Score: Player: ' + playerScore + ' | Computer: ' + computerScore + " | Refresh The Page To Restart";
+                        }
+                            gameOver = 1;
+                         
+                    } else {
+
+                    li.textContent = 'Round ' + roundNum + ': ' + gameString + ' Total Score: Player: ' + playerScore + ' | Computer: ' + computerScore; 
+
+                        }
+
+                        
+
+
+
+                    if(!tie){
+                        roundNum++
+                    }
                     
                     return li;
 
@@ -97,5 +113,7 @@ if (playerScore == 5 || computerScore == 5){
 
                 resultList.appendChild(createResultItem());
             
-        });
-}
+        
+
+    }
+});
