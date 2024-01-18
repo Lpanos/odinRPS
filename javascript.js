@@ -50,9 +50,14 @@ function game(){
         for (let i = 1; i <= 5; i++){
             let computerSelection = getComputerChoice(gameChoices);
 
-            let playerSelection = prompt(); //prompts player to input their choice
+            let playerSelection = prompt('Please Enter: Rock, Paper, Or Scissors'); //prompts player to input their choice
 
                 playerSelection = playerSelection.toLowerCase();
+
+                while (!(gameChoices.includes(playerSelection))){
+                    playerSelection = prompt('Please Enter A Valid Option (Rock, Paper, Or Scissors)')
+                    playerSelection = playerSelection.toLowerCase();
+                };
 
             results = (playRound(playerSelection,computerSelection,playerScore,computerScore)); //play one round, inputting all 4 parameters
                 gameString = results.gameString;
