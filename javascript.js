@@ -1,20 +1,16 @@
 const gameChoices = ['rock','paper','scissors']; //sets the possible choices for the computer to choose from
 let gameString = '';
+let playerScore = 0;
+let computerScore = 0;
+let roundNum = 0;
 
-function getComputerChoice(gameChoices){
-    return gameChoices[Math.floor(Math.random() * gameChoices.length)];
-} //selects a random string from the array 'game choices' and then returns the string
+function getComputerChoice(options){
+    return options[Math.floor(Math.random() * options.length)];
+} //selects a random string from the input array 'options' and returns
 
 
-function playRound(playerSelection, computerSelection,playerScore, computerScore){
-        if(!(gameChoices.includes(playerSelection))){ //checks players choice against the array to see if it DOESNT match
-
-            gameString = 'your choice of: ' + playerSelection + ' is not a valid option';
-            return {gameString: gameString,
-                playerScore: playerScore,
-                computerScore: computerScore}; //returns all values seperately
-
-        } else if(playerSelection == computerSelection){
+function playRound(playerSelection, computerSelection, playerScore, computerScore){
+        if(playerSelection == computerSelection){
 
             gameString = 'It\'s a tie! You both chose ' + playerSelection + '!';
 
@@ -25,55 +21,81 @@ function playRound(playerSelection, computerSelection,playerScore, computerScore
         } else if(playerSelection == 'rock' && computerSelection == 'paper' || //if computer wins
                     playerSelection == 'paper' && computerSelection == 'scissors' ||
                     playerSelection == 'scissors' && computerSelection == 'rock'
-        ){
-            gameString = "You lose, " + computerSelection + " beats " + playerSelection + "!";
-            computerScore++; //increment computer score by 1
-            return {gameString: gameString,
-                    playerScore: playerScore,
-                    computerScore: computerScore};//tell them why
+                    ){
+                        gameString = "You lose, " + computerSelection + " beats " + playerSelection + "!";
+
+                        computerScore++;
+
+                        return {gameString: gameString,
+                                playerScore: playerScore,
+                                computerScore: computerScore};
         
-    } else {
-        gameString = "You win, " + playerSelection + " beats " + computerSelection + "!"; //if not, go here
-        playerScore++; //increment player score by 1
-        return {gameString: gameString,
-                playerScore: playerScore,
-                computerScore: computerScore
-            };
+        } else {
+                gameString = "You win, " + playerSelection + " beats " + computerSelection + "!";
+
+                playerScore++;
+
+                return {gameString: gameString,
+                        playerScore: playerScore,
+                        computerScore: computerScore
+                };
     }
 }
 
 
-function game(){
-    let computerScore = 0;
-    let playerScore = 0 //define and set score variables
+let results = document.querySelector('#results');
+    let resultList = document.querySelector('#resultList');
 
-        for (let i = 1; i <= 5; i++){
-            let computerSelection = getComputerChoice(gameChoices);
+let choices = document.querySelector('#choices');
 
-            let playerSelection = prompt('Please Enter: Rock, Paper, Or Scissors'); //prompts player to input their choice
+if (playerScore == 5 || computerScore == 5){
 
-                playerSelection = playerSelection.toLowerCase();
+    function createWinner (){
 
-                while (!(gameChoices.includes(playerSelection))){
-                    playerSelection = prompt('Please Enter A Valid Option (Rock, Paper, Or Scissors)')
-                    playerSelection = playerSelection.toLowerCase();
-                };
-
-            results = (playRound(playerSelection,computerSelection,playerScore,computerScore)); //play one round, inputting all 4 parameters
-                gameString = results.gameString;
-                playerScore = results.playerScore;
-                computerScore = results.computerScore;
-            console.log(gameString + ' Player Score: ' + playerScore + ' | Computer Score: ' + computerScore); 
-
-
-        } 
-            if(playerScore < computerScore){
-                return 'Sorry bozo, you ultimately lost, with a score of: ' + playerScore + ' to ' + computerScore;
+        let li = document.createElement('li');
+            if(playerScore > computerScore){
+                li.textContent = 'Congradulations, You Won! Total Score: Player: ' + playerScore + ' | Computer: ' + computerScore; 
             } else {
-                return 'Congradulations, you won! With a score of: ' + playerScore + ' to ' + computerScore;
-            }
-        
-    
-}
+                li.textContent = 'Sorry Pal, You Lost! Total Score: Player: ' + playerScore + ' | Computer: ' + computerScore;
+             }
+                return li; 
+    }
 
-console.log(game());
+} else {
+
+        choices.addEventListener('click', (event) => {
+
+            let target = event.target;
+
+            switch(target.id){
+                case 'rock':
+                    playerSelection = 'rock';
+                    break;
+                case 'paper':
+                    playerSelection = 'paper';
+                    break;
+                case 'scissors':
+                    playerSelection = 'scissors';
+                    break;
+            };
+
+                function createResultItem(){
+
+                    let roundOutcome = playRound(playerSelection,getComputerChoice(gameChoices),playerScore,computerScore);
+
+                        gameString = roundOutcome.gameString;
+                        playerScore =+ roundOutcome.playerScore;
+                        computerScore =+ roundOutcome.computerScore;
+
+                    let li = document.createElement('li');
+
+                    li.textContent = 'Round ' + ++roundNum + ': ' + gameString + ' Total Score: Player: ' + playerScore + ' | Computer: ' + computerScore; 
+                    
+                    return li;
+
+                }
+
+                resultList.appendChild(createResultItem());
+            
+        });
+}
